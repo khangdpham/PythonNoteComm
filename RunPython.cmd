@@ -1,0 +1,3 @@
+python NoteTrainer.py
+
+pause
