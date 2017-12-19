@@ -1,40 +1,26 @@
 import socket
-import sys
-from _thread import *
  
-HOST = ''   # Symbolic name meaning all available interfaces
-PORT = 12345 # Arbitrary non-privileged port
- 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print('Socket created')
- 
-#Bind socket to local host and port
-try:
-    s.bind((HOST, PORT))
-except socket.error as msg:
-    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
-    sys.exit()
+def Main():
+    host = ""
+    port = 12345
      
-print('Socket bind complete') 
- 
-#Start listening on socket
-s.listen(10)
-print('Socket now listening')
- 
-#Function for handling connections. This will be used to create threads
-def clientthread(conn):
-    #Sending message to connected client
-    conn.sendall('OK'.encode())
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mySocket.bind((host,port))
+     
+    mySocket.listen(1)
+    conn, addr = mySocket.accept()
+    print ("Connection from: " + str(addr))
+    while True:
+            data = conn.recv(1024).decode()
+            if not data:
+                    break
+            print ("from connected  user: " + str(data))
+             
+            data = str(data).upper()
+            print ("sending: " + str(data))
+            conn.send(data.encode())
+             
     conn.close()
- 
-#now keep talking with the client
-while 1:
-    #wait to accept a connection - blocking call
-    conn, addr = s.accept()
-    print('Connected with ' + addr[0] + ':' + str(addr[1]))
-    print(conn.recv(1)) 
-    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    #start_new_thread(clientthread ,(conn,))
-    conn.sendall('OK'.encode())
-    conn.close()
-s.close()
+     
+if __name__ == '__main__':
+    Main()

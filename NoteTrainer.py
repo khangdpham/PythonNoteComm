@@ -150,7 +150,7 @@ def build_default_tuner_range():
             
 class NoteTrainer:
     def __init__(self):
-        self.CurrentNote=None
+        self.CurrentNote=[]
         self.Stopped= False
 
     def main(self):

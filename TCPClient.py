@@ -20,29 +20,20 @@ def run_note_trainer(note_tr):
   note_tr.main()
   
 start_new_thread(run_note_trainer ,(nt,))
+
 while True:
-  if nt.CurrentNote is not None:
-    print(nt.CurrentNote)
-  time.sleep(.5)
-
-#try:
-#    
-#    # Send data
-#    message = '1'
-#    print(sys.stderr, 'sending "%s"' % message)
-#    sock.sendall(message.encode())
-#
-#    # Look for the response
-#    amount_received = 0
-#    amount_expected = len(message)
-#    
-#    while True:
-#        data = sock.recv(16)
-#        amount_received += len(data)
-#        print('received "%s"' % data)
-        
-        
-
-#finally:
-#    print('closing socket')
-#    sock.close()
+  #try:
+    if len(nt.CurrentNote)>0:
+      entry = nt.CurrentNote.pop(0)
+      str='{}'.format(entry[0])
+      print(str)
+      sock.sendall(str.encode())
+      #data = sock.recv(16)
+      #print(data)
+    else:
+      time.sleep(0.01)
+  #except:
+  #  continue
+  #finally:
+  #    print('closing socket')
+  #    sock.close()
