@@ -25,7 +25,7 @@ while True:
   #try:
     if len(nt.CurrentNote)>0:
       entry = nt.CurrentNote.pop(0)
-      str='{}'.format(entry[0])
+      str='{}'.format(entry[1])
       print(str)
       sock.sendall(str.encode())
       #data = sock.recv(16)
