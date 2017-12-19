@@ -7,7 +7,7 @@ import time
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-server_address = ('192.168.0.19', 12345)
+server_address = ('192.168.0.32', 12345)
 print('connecting to %s port %s' % server_address)
 sock.connect(server_address)
 print(' Starting NoteTrainer')
@@ -25,7 +25,7 @@ while True:
   #try:
     if len(nt.CurrentNote)>0:
       entry = nt.CurrentNote.pop(0)
-      str='{}'.format(entry[1])
+      str='{}'.format(entry[2])
       print(str)
       sock.sendall(str.encode())
       #data = sock.recv(16)
