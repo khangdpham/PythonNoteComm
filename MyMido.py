@@ -7,6 +7,7 @@ import argparse
 import signal
 import sys
 import threading
+import random
 
 # LED strip configuration:
 LED_COUNT      = 100      # Number of LED pixels.
@@ -39,11 +40,10 @@ class MusicLightning(object):
           note=int(arr[2].split('=')[1]) - SHIFT_KEY
           velocity=int(arr[3].split('=')[1])
           print(note," : ",velocity)
-          print(note," : ",velocity)
           if velocity == 0:
             strip.setPixelColor(note,Color(0,0,0))
           else:
-            strip.setPixelColor(note,Color(255,128,0))
+            strip.setPixelColor(note,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
           strip.show()
           print("Ending")
   def signal_handler(signal, frame):
