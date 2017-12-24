@@ -24,20 +24,16 @@ class MusicLightning(object):
   def __init__(self,interval=1):
     self.run()
 
-    #self.interval = interval
-    #thread=threading.Thread(target=self.run,args=())
-    #thread.daemon = True
-    #thread.start()
   def run(self):
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
     strip.begin()
-
+    self.calibrate(strip)
     print(mido.get_input_names())
     with mido.open_input('ARIUS MIDI 1') as inport:
       for msg in inport:
         if msg.type == 'note_on':
           arr=str(msg).split(" ")
-          note=int(arr[2].split('=')[1]) - SHIFT_KEY
+          note=int(arr[2].split('=')[1]) -  SHIFT_KEY
           velocity=int(arr[3].split('=')[1])
           print(note," : ",velocity)
           if velocity == 0:
@@ -46,6 +42,24 @@ class MusicLightning(object):
             strip.setPixelColor(note,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
           strip.show()
           print("Ending")
+  def calibrate(self,strip):
+    for i in range(strip.numPixels()):
+      strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+      strip.show()
+      time.sleep(0.005)
+
+    for i in range(strip.numPixels(),-1,-1):
+      strip.setPixelColor(i,0)
+      strip.show()
+    for i in range(strip.numPixels(),-1,-1):
+      strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+      strip.show()
+      time.sleep(0.005)
+    time.sleep(0.01)
+    for i in range(strip.numPixels(),-1,-1):
+      strip.setPixelColor(i,0)
+      strip.show()
+ 
   def signal_handler(signal, frame):
     colorWipe(strip, Color(0,0,0))
     sys.exit(0)
