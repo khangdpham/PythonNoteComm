@@ -39,7 +39,7 @@ class MusicLightning(object):
           if velocity == 0:
             strip.setPixelColor(note,Color(0,0,0))
           else:
-            strip.setPixelColor(note,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+            strip.setPixelColor(note,Color(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
           strip.show()
           print("Ending")
   def calibrate(self,strip):
