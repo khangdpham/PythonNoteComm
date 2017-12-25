@@ -19,7 +19,7 @@ LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
-SHIFT_KEY      = 21
+SHIFT_KEY      = 9
 class MusicLightning(object):
   def __init__(self,interval=1):
     self.run()
@@ -50,7 +50,7 @@ class MusicLightning(object):
 
     for i in range(strip.numPixels(),-1,-1):
       strip.setPixelColor(i,0)
-      strip.show()
+    strip.show()
     for i in range(strip.numPixels(),-1,-1):
       strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
       strip.show()
@@ -58,7 +58,7 @@ class MusicLightning(object):
     time.sleep(0.01)
     for i in range(strip.numPixels(),-1,-1):
       strip.setPixelColor(i,0)
-      strip.show()
+    strip.show()
  
   def signal_handler(signal, frame):
     colorWipe(strip, Color(0,0,0))
