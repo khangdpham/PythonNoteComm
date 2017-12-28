@@ -39,6 +39,7 @@ class MusicLightning(object):
       time.sleep(1)
   def run(self):
     while True:
+        print(self.strip.numPixels())
         print(mido.get_input_names())
         with mido.open_input('ARIUS MIDI 1') as inport:
           for msg in inport:
@@ -55,43 +56,71 @@ class MusicLightning(object):
                 self.strip.setPixelColor(note,Color(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
               self.strip.show()
   def auto_lightshow(self):
+    numCase = 10
     while True: 
-      print(len(self.autoShow))
       if len(self.autoShow) > 0 :
         time.sleep(1)
         continue
       else: 
         randomColor = Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
         rcase = random.randint(0,10)
-        if rcase%5 == 0:
-          self.colorWipe(self.strip,randomColor)
-        if rcase%5 == 1:
+        if rcase%numCase== 0:
+          self.flash(self.strip,5,random.randint(1,10),0.07)
+        if rcase%numCase == 1:
           self.theaterChase(self.strip,randomColor,100)
-        if rcase%5 == 2:
+        if rcase%numCase == 2:
           self.rainbow(self.strip)
-        if rcase%5 == 3:
-          self.swift(self.strip)
+        if rcase%numCase == 3:
+          for ii in range(5):
+            self.alternate(self.strip,5)
+        if rcase%numCase == 5:
+          self.swift(self.strip,random.randint(1,10),0.02)
         self.ClearAll(self.strip)
+  
   def ClearAll(self,strip):
     for i in range(strip.numPixels()):
       strip.setPixelColor(i,Color(0,0,0))
     strip.show()
-  def swift(self,strip):
-    for i in range(strip.numPixels()):
-      strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+
+  def alternate(self,strip,alternation=3):
+    for i in range(1,alternation):
+      for j in range(0,strip.numPixels(),i+1):
+        strip.setPixelColor(j,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
       strip.show()
-      time.sleep(0.005)
-    for i in range(strip.numPixels(),-1,-1):
-      strip.setPixelColor(i,0)
-    strip.show()
-    for i in range(strip.numPixels(),-1,-1):
-      strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+      time.sleep(0.9)
+      for j in range(0,strip.numPixels(),i+1):
+        strip.setPixelColor(j,Color(0,0,0))
       strip.show()
-      time.sleep(0.005)
-    time.sleep(0.01)
-    for i in range(strip.numPixels(),-1,-1):
-      strip.setPixelColor(i,0)
-    strip.show()
+
+  def flash(self,strip,width=3,direction=1,delay=0.005):
+    if direction%2 == 0:
+      for i in range(strip.numPixels()-width):
+        for ii in range(width):
+          strip.setPixelColor(i+ii,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+        strip.show()
+        time.sleep(delay)
+        for jj in range(width):
+          strip.setPixelColor(i+jj,Color(0,0,0))   
+    else:
+      for i in range(strip.numPixels(),-1+width,-1):
+        for ii in range(width):
+          strip.setPixelColor(i+ii,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+        strip.show()
+        time.sleep(delay)
+        for jj in range(width):
+          strip.setPixelColor(i+jj,Color(0,0,0))
+ 
+  def swift(self,strip,direction=1,delay=0.005):
+    if direction%2==0 :
+      for i in range(strip.numPixels()):
+        strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+        strip.show()
+        time.sleep(delay)
+    else:
+      for i in range(strip.numPixels(),-1,-1):
+        strip.setPixelColor(i,Color(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
+        strip.show()
+        time.sleep(delay)
  
   def signal_handler(signal, frame):
     colorWipe(strip, Color(0,0,0))
@@ -113,17 +142,12 @@ class MusicLightning(object):
         strip.setPixelColor(i,self.wheel((i+j) & 255))
       strip.show()
       time.sleep(wait_ms/1000.0)
-  def colorWipe(self,strip, color, wait_ms=50):
-    for i in range(strip.numPixels()):
-      strip.setPixelColor(i, color)
-      strip.show()
-      time.sleep(wait_ms/1000.0)
 
   def theaterChase(self,strip, color, wait_ms=50, iterations=10):
     for j in range(iterations):
       for q in range(3):
         for i in range(0, strip.numPixels(), 3):
-          strip.setPixelColor(i+q, color)
+          strip.setPixelColor(i+q,Color(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
         strip.show()
         time.sleep(wait_ms/1000.0)
         for i in range(0, strip.numPixels(), 3):
