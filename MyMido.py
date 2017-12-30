@@ -19,10 +19,16 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
 SHIFT_KEY      = 9
+ARIUS_OFF      = 0
+ARIUS_ON       = 1
+ARIUS_IDLE     = 2
+ARIUS_ACTIVE   = 3
+WAITTIME       = 10
 
 class MusicLightning(object):
   def __init__(self,interval=1):
     self.autoShow = []
+    self.AriusState = ARIUS_OFF
     self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
     self.strip.begin()
     autoThread = threading.Thread(target=self.auto_lightshow,)
@@ -39,22 +45,30 @@ class MusicLightning(object):
       time.sleep(1)
   def run(self):
     while True:
-        print(self.strip.numPixels())
+      try:
         print(mido.get_input_names())
         with mido.open_input('ARIUS MIDI 1') as inport:
+          self.AriusState = ARIUS_ON         
           for msg in inport:
+            print(self.AriusState)
             if msg.type == 'note_on':
               arr=str(msg).split(" ")
               note=int(arr[2].split('=')[1]) -  SHIFT_KEY
               velocity=int(arr[3].split('=')[1])
-              print(note," : ",velocity)
+              #print(note," : ",velocity)
               if velocity == 0:
                 self.strip.setPixelColor(note,Color(0,0,0))
               else:
-                if (len(self.autoShow)< 20):
+                if (len(self.autoShow)< WAITTIME):
                   self.autoShow.append(note)
                 self.strip.setPixelColor(note,Color(random.randint(0,255),random.randint(0,255),random.randint(0,255)))
               self.strip.show()
+  
+      except Exception as exc:
+        self.AriusState = ARIUS_OFF
+        print(str(exc))
+        time.sleep(1)
+        
   def auto_lightshow(self):
     numCase = 10
     while True: 
@@ -62,6 +76,8 @@ class MusicLightning(object):
         time.sleep(1)
         continue
       else: 
+        if self.AriusState == ARIUS_ON:
+          self.AriusState = ARIUS_IDLE
         randomColor = Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
         rcase = random.randint(0,10)
         if rcase%numCase== 0:
